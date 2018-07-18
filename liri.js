@@ -11,17 +11,7 @@ var spotify = new Spotify(keys.spotify);
 var userInput = process.argv
 var userCommand = process.argv[2];
 
-///// is this part working?
 
-var title = "";
-
-for (i = 3; i < userInput.length; i++) {
-    title = title + " " + userInput[i];
-    // title = title.trim().replace(" ", "+");
-    // console.log(title)
-}
-
-//////////
 
 if (userCommand === "my-tweets") {
      
@@ -38,26 +28,41 @@ if (userCommand === "my-tweets") {
 
 }
 
-//////
+///////
 
-// if (userCommand === "spotify-this-song") {
+if (userCommand === "spotify-this-song") {
     
-//     function spotifySong(song){}
+    var songName = "";
 
-//     spotify.search({ type: 'track', query: 'song', limit: 5 }, function(err, data) {
-//         if (err) {
-//           return console.log('Error occurred: ' + err);
-//         }
-//         if (title === "") {
-//             title = "The Sign";
-//         }
+    for (var i = 3; i < userInput.length; i++) {
+    
+      if (i > 3 && i < userInput.length) {
+        songName = songName + "+" + userInput[i];
+      }
+    
+      else {
+        songName += userInput[i];
+      }
+
+    }
+}
+
+    // function spotifySong(song){}
+
+    // spotify.search({ type: 'track', query: 'song', limit: 5 }, function(err, data) {
+    //     if (err) {
+    //       return console.log('Error occurred: ' + err);
+    //     }
+    //     if (title === "") {
+    //         title = "The Sign";
+    //     }
        
-//       console.log(data.tracks.items); 
-//       });
-//     });
+    //   console.log(data.tracks.items); 
+    //   });
+    // });
 
 
-////////
+///////
 
 if (userCommand === "movie-this") {
 
@@ -72,7 +77,11 @@ if (userCommand === "movie-this") {
       else {
         movieName += userInput[i];
       }
+
     }
+}
+
+if (movieName !== "") {
 
     var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
 
@@ -87,12 +96,29 @@ if (userCommand === "movie-this") {
             console.log("Language: " + JSON.parse(body).Language);
             console.log("Plot: " + JSON.parse(body).Plot);
             console.log("Actors: " + JSON.parse(body).Actors);
+            console.log("--------------------------------");
         }
     });
 
-};
+}
 
+else {
 
-// if (userCommand === "do-what-it-says") {
+    var queryUrl = "http://www.omdbapi.com/?t=" + 'Mr. Nobody' + "&y=&plot=short&apikey=trilogy";
 
-// }
+    request(queryUrl, function(error, response, body) {
+
+        if (!error && response.statusCode === 200) {
+            console.log("Movie Title: " + JSON.parse(body).Title);
+            console.log("Release Year: " + JSON.parse(body).Year);
+            console.log("IMDB Rating: " + JSON.parse(body).imdbRating);
+            console.log("Rotten Tomatoes Rating: " + JSON.parse(body).tomatoRating);
+            console.log("Country: " + JSON.parse(body).Country);
+            console.log("Language: " + JSON.parse(body).Language);
+            console.log("Plot: " + JSON.parse(body).Plot);
+            console.log("Actors: " + JSON.parse(body).Actors);
+            console.log("--------------------------------");
+        }
+    });
+
+}
