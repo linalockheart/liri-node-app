@@ -11,10 +11,9 @@ var spotify = new Spotify(keys.spotify);
 var userInput = process.argv
 var userCommand = process.argv[2];
 
+/////// Twitter Function ///////
 
-
-if (userCommand === "my-tweets") {
-     
+function getTweets() {
     var params = {screen_name: 'linalockheart', count: 20};
     client.get('statuses/user_timeline', params, function(error, tweets, response) {
       if (!error) {
@@ -25,46 +24,43 @@ if (userCommand === "my-tweets") {
           }
       }
     });
-
 }
 
-///////
+/////// Spotify Function ///////
 
-if (userCommand === "spotify-this-song") {
-    
+function getSong() {
+
     var songName = "";
 
     for (var i = 3; i < userInput.length; i++) {
-    
-      if (i > 3 && i < userInput.length) {
-        songName = songName + "+" + userInput[i];
+        songName = songName + " " + userInput[i];
       }
-    
-      else {
-        songName += userInput[i];
-      }
+      console.log(songName);
 
+    if (songName !== "") {
+        spotify.search({ type: 'track', query: songName}, function(err, data) {
+            if (err) {
+              return console.log('Error occurred: ' + err);
+            }
+           
+            else {
+                console.log(data.tracks.items[0].album.artists);
+                console.log("Artist: " + data.tracks.items[0]); 
+                console.log("Song: " + data.tracks.items[0].name);
+                console.log("Album: " + data.tracks.items[0].album.name);
+                console.log("Preview: ")
+            }
+    
+        })
+    
     }
 }
 
-    // function spotifySong(song){}
-
-    // spotify.search({ type: 'track', query: 'song', limit: 5 }, function(err, data) {
-    //     if (err) {
-    //       return console.log('Error occurred: ' + err);
-    //     }
-    //     if (title === "") {
-    //         title = "The Sign";
-    //     }
-       
-    //   console.log(data.tracks.items); 
-    //   });
-    // });
 
 
-///////
+/////// OMDB Function ///////
 
-if (userCommand === "movie-this") {
+function getMovie() {
 
     var movieName = "";
 
@@ -79,46 +75,60 @@ if (userCommand === "movie-this") {
       }
 
     }
+
+    if (movieName !== "") {
+
+        var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
+
+        request(queryUrl, function(error, response, body) {
+
+            if (!error && response.statusCode === 200) {
+                console.log("Movie Title: " + JSON.parse(body).Title);
+                console.log("Release Year: " + JSON.parse(body).Year);
+                console.log("IMDB Rating: " + JSON.parse(body).imdbRating);
+                console.log("Rotten Tomatoes Rating: " + JSON.parse(body).tomatoRating);
+                console.log("Country: " + JSON.parse(body).Country);
+                console.log("Language: " + JSON.parse(body).Language);
+                console.log("Plot: " + JSON.parse(body).Plot);
+                console.log("Actors: " + JSON.parse(body).Actors);
+                console.log("--------------------------------");
+            }
+        });
+
+    }
+
+    else {
+
+        var queryUrl = "http://www.omdbapi.com/?t=" + 'Mr. Nobody' + "&y=&plot=short&apikey=trilogy";
+
+        request(queryUrl, function(error, response, body) {
+
+            if (!error && response.statusCode === 200) {
+                console.log("Movie Title: " + JSON.parse(body).Title);
+                console.log("Release Year: " + JSON.parse(body).Year);
+                console.log("IMDB Rating: " + JSON.parse(body).imdbRating);
+                console.log("Rotten Tomatoes Rating: " + JSON.parse(body).tomatoRating);
+                console.log("Country: " + JSON.parse(body).Country);
+                console.log("Language: " + JSON.parse(body).Language);
+                console.log("Plot: " + JSON.parse(body).Plot);
+                console.log("Actors: " + JSON.parse(body).Actors);
+                console.log("--------------------------------");
+            }
+        });
+
+    }
 }
 
-if (movieName !== "") {
+/////// Call Functions ///////
 
-    var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
-
-    request(queryUrl, function(error, response, body) {
-
-        if (!error && response.statusCode === 200) {
-            console.log("Movie Title: " + JSON.parse(body).Title);
-            console.log("Release Year: " + JSON.parse(body).Year);
-            console.log("IMDB Rating: " + JSON.parse(body).imdbRating);
-            console.log("Rotten Tomatoes Rating: " + JSON.parse(body).tomatoRating);
-            console.log("Country: " + JSON.parse(body).Country);
-            console.log("Language: " + JSON.parse(body).Language);
-            console.log("Plot: " + JSON.parse(body).Plot);
-            console.log("Actors: " + JSON.parse(body).Actors);
-            console.log("--------------------------------");
-        }
-    });
-
+if (userCommand === "my-tweets") {
+    getTweets();
 }
 
-else {
+if (userCommand === "spotify-this-song") {
+    getSong();
+}
 
-    var queryUrl = "http://www.omdbapi.com/?t=" + 'Mr. Nobody' + "&y=&plot=short&apikey=trilogy";
-
-    request(queryUrl, function(error, response, body) {
-
-        if (!error && response.statusCode === 200) {
-            console.log("Movie Title: " + JSON.parse(body).Title);
-            console.log("Release Year: " + JSON.parse(body).Year);
-            console.log("IMDB Rating: " + JSON.parse(body).imdbRating);
-            console.log("Rotten Tomatoes Rating: " + JSON.parse(body).tomatoRating);
-            console.log("Country: " + JSON.parse(body).Country);
-            console.log("Language: " + JSON.parse(body).Language);
-            console.log("Plot: " + JSON.parse(body).Plot);
-            console.log("Actors: " + JSON.parse(body).Actors);
-            console.log("--------------------------------");
-        }
-    });
-
+if (userCommand === "movie-this") {
+    getMovie();
 }
