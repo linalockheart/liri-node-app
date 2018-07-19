@@ -1,5 +1,7 @@
 require("dotenv").config();
+
 var keys = require("./keys.js");
+var fs = require("fs");
 
 var Twitter = require('twitter');
 var Spotify = require('node-spotify-api');
@@ -44,19 +46,32 @@ function getSong() {
             }
            
             else {
-                console.log(data.tracks.items[0].album.artists);
-                console.log("Artist: " + data.tracks.items[0]); 
+                console.log("Artist: " + data.tracks.items[0].album.artists[0].name); 
                 console.log("Song: " + data.tracks.items[0].name);
                 console.log("Album: " + data.tracks.items[0].album.name);
-                console.log("Preview: ")
+                console.log("Preview: " + data.tracks.items[0].preview_url);
             }
     
         })
-    
+    }
+    else {
+        songName = "the sign";
+        console.log(songName);
+        spotify.search({ type: 'track', query: songName}, function(err, data) {
+            if (err) {
+              return console.log('Error occurred: ' + err);
+            }
+           
+            else {
+                console.log("Artist: " + data.tracks.items[5].album.artists[0].name); 
+                console.log("Song: " + data.tracks.items[5].name);
+                console.log("Album: " + data.tracks.items[5].album.name);
+                console.log("Preview: " + data.tracks.items[5].preview_url);
+            }
+        })
+
     }
 }
-
-
 
 /////// OMDB Function ///////
 
@@ -99,7 +114,8 @@ function getMovie() {
 
     else {
 
-        var queryUrl = "http://www.omdbapi.com/?t=" + 'Mr. Nobody' + "&y=&plot=short&apikey=trilogy";
+        movieName = "Mr. Nobody";
+        var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
 
         request(queryUrl, function(error, response, body) {
 
