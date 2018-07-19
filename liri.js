@@ -13,6 +13,9 @@ var spotify = new Spotify(keys.spotify);
 var userInput = process.argv
 var userCommand = process.argv[2];
 
+var songName = "";
+var movieName = "";
+
 /////// Twitter Function ///////
 
 function getTweets() {
@@ -31,8 +34,6 @@ function getTweets() {
 /////// Spotify Function ///////
 
 function getSong() {
-
-    var songName = "";
 
     for (var i = 3; i < userInput.length; i++) {
         songName = songName + " " + userInput[i];
@@ -77,8 +78,6 @@ function getSong() {
 
 function getMovie() {
 
-    var movieName = "";
-
     for (var i = 3; i < userInput.length; i++) {
     
       if (i > 3 && i < userInput.length) {
@@ -101,7 +100,7 @@ function getMovie() {
                 console.log("Movie Title: " + JSON.parse(body).Title);
                 console.log("Release Year: " + JSON.parse(body).Year);
                 console.log("IMDB Rating: " + JSON.parse(body).imdbRating);
-                console.log("Rotten Tomatoes Rating: " + JSON.parse(body).tomatoRating);
+                console.log("Rotten Tomatoes Rating: " + JSON.parse(body).Ratings[1].Value);
                 console.log("Country: " + JSON.parse(body).Country);
                 console.log("Language: " + JSON.parse(body).Language);
                 console.log("Plot: " + JSON.parse(body).Plot);
@@ -123,7 +122,7 @@ function getMovie() {
                 console.log("Movie Title: " + JSON.parse(body).Title);
                 console.log("Release Year: " + JSON.parse(body).Year);
                 console.log("IMDB Rating: " + JSON.parse(body).imdbRating);
-                console.log("Rotten Tomatoes Rating: " + JSON.parse(body).tomatoRating);
+                console.log("Rotten Tomatoes Rating: " + JSON.parse(body).Ratings[1].Value);
                 console.log("Country: " + JSON.parse(body).Country);
                 console.log("Language: " + JSON.parse(body).Language);
                 console.log("Plot: " + JSON.parse(body).Plot);
@@ -133,6 +132,23 @@ function getMovie() {
         });
 
     }
+}
+
+/////// Random Function ///////
+
+function whatItSays() {
+
+    fs.readFile("random.txt", "utf8", function(err, data) {
+      if (err) {
+        return console.log(err);
+      }
+      else {
+      data = data.split(",");
+      userCommand = data[0];
+      songName = data[1];
+      getSong();
+    }
+  })
 }
 
 /////// Call Functions ///////
@@ -147,4 +163,8 @@ if (userCommand === "spotify-this-song") {
 
 if (userCommand === "movie-this") {
     getMovie();
+}
+
+if (userCommand === "do-what-it-says") {
+    whatItSays();
 }
