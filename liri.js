@@ -3,6 +3,7 @@ require("dotenv").config();
 var keys = require("./keys.js");
 var fs = require("fs");
 
+var inquirer = require('inquirer');
 var Twitter = require('twitter');
 var Spotify = require('node-spotify-api');
 var request = require('request');
@@ -11,10 +12,57 @@ var client = new Twitter(keys.twitter);
 var spotify = new Spotify(keys.spotify);
 
 var userInput = process.argv
-var userCommand = process.argv[2];
+// var userCommand = process.argv[2];
+var userCommand = "";
 
 var songName = "";
 var movieName = "";
+
+/////// Inquirer ///////
+
+console.log("Welcome to LIRI!\nPlease select one of the following commands to get started.")
+console.log("==============================================");
+
+inquirer.prompt([
+  
+    {
+      type: "list",
+      name: "command",
+      message: "Please select a command",
+      choices: ["my-tweets", "spotify-this-song", "movie-this", "do-what-it-says"]
+    }
+  
+  ]).then(function(choice) {
+
+    if (choice.command === "spotify-this-song") {
+        inquirer.prompt([
+
+            {
+              type: "input",
+              name: "song",
+              message: "Please enter a song name:"
+            }
+        ]).then(function(songTitle) {
+            songName = songTitle.song;
+            getSong();
+        })
+    }
+
+    if (choice.command === "movie-this") {
+        inquirer.prompt([
+
+            {
+              type: "input",
+              name: "movie",
+              message: "Please enter a movie title:"
+            }
+            ]).then(function(movieTitle) {
+                movieName = movieTitle.movie;
+                getMovie();
+            })
+    }
+   });
+
 
 /////// Twitter Function ///////
 
@@ -25,7 +73,7 @@ function getTweets() {
           for (var i = 0; i < tweets.length; i++) {
               console.log(tweets[i].text);
               console.log(tweets[i].created_at);
-              console.log("--------------------------------");
+              console.log("==============================================");
           }
       }
     });
@@ -38,7 +86,7 @@ function getSong() {
     for (var i = 3; i < userInput.length; i++) {
         songName = songName + " " + userInput[i];
       }
-      console.log(songName);
+    //   console.log(songName);
 
     if (songName !== "") {
         spotify.search({ type: 'track', query: songName}, function(err, data) {
@@ -51,6 +99,7 @@ function getSong() {
                 console.log("Song: " + data.tracks.items[0].name);
                 console.log("Album: " + data.tracks.items[0].album.name);
                 console.log("Preview: " + data.tracks.items[0].preview_url);
+                console.log("==============================================");
             }
     
         })
@@ -68,6 +117,7 @@ function getSong() {
                 console.log("Song: " + data.tracks.items[5].name);
                 console.log("Album: " + data.tracks.items[5].album.name);
                 console.log("Preview: " + data.tracks.items[5].preview_url);
+                console.log("==============================================");
             }
         })
 
@@ -105,7 +155,7 @@ function getMovie() {
                 console.log("Language: " + JSON.parse(body).Language);
                 console.log("Plot: " + JSON.parse(body).Plot);
                 console.log("Actors: " + JSON.parse(body).Actors);
-                console.log("--------------------------------");
+                console.log("==============================================");
             }
         });
 
@@ -127,14 +177,14 @@ function getMovie() {
                 console.log("Language: " + JSON.parse(body).Language);
                 console.log("Plot: " + JSON.parse(body).Plot);
                 console.log("Actors: " + JSON.parse(body).Actors);
-                console.log("--------------------------------");
+                console.log("==============================================");
             }
         });
 
     }
 }
 
-/////// Random Function ///////
+/////// What It Says Function ///////
 
 function whatItSays() {
 
