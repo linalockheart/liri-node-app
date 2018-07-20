@@ -1,3 +1,5 @@
+/////// Stuff I Need ///////
+
 require("dotenv").config();
 
 var keys = require("./keys.js");
@@ -11,8 +13,9 @@ var request = require('request');
 var client = new Twitter(keys.twitter);
 var spotify = new Spotify(keys.spotify);
 
+/////// Global Variables ///////
+
 var userInput = process.argv
-// var userCommand = process.argv[2];
 var userCommand = "";
 
 var songName = "";
@@ -68,7 +71,7 @@ inquirer.prompt([
     }
 
     if (choice.command === "do-what-it-says") {
-        whatItSays();
+        doWhatItSays();
     }
 
    });
@@ -96,7 +99,6 @@ function getSong() {
     for (var i = 3; i < userInput.length; i++) {
         songName = songName + " " + userInput[i];
       }
-    //   console.log(songName);
 
     if (songName !== "") {
         spotify.search({ type: 'track', query: songName}, function(err, data) {
@@ -116,7 +118,7 @@ function getSong() {
     }
     else {
         songName = "the sign";
-        // console.log(songName);
+
         spotify.search({ type: 'track', query: songName}, function(err, data) {
             if (err) {
               return console.log('Error occurred: ' + err);
@@ -194,9 +196,9 @@ function getMovie() {
     }
 }
 
-/////// What It Says Function ///////
+/////// Do What It Says Function ///////
 
-function whatItSays() {
+function doWhatItSays() {
 
     fs.readFile("random.txt", "utf8", function(err, data) {
       if (err) {
@@ -209,22 +211,4 @@ function whatItSays() {
       getSong();
     }
   })
-}
-
-/////// Call Functions ///////
-
-if (userCommand === "my-tweets") {
-    getTweets();
-}
-
-if (userCommand === "spotify-this-song") {
-    getSong();
-}
-
-if (userCommand === "movie-this") {
-    getMovie();
-}
-
-if (userCommand === "do-what-it-says") {
-    whatItSays();
 }
