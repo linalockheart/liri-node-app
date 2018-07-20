@@ -20,7 +20,8 @@ var movieName = "";
 
 /////// Inquirer ///////
 
-console.log("Welcome to LIRI!\nPlease select one of the following commands to get started.")
+console.log("==============================================");
+console.log("Hi, I'm LIRI! (^_^) \nPlease select one of the following commands to get started.")
 console.log("==============================================");
 
 inquirer.prompt([
@@ -28,11 +29,15 @@ inquirer.prompt([
     {
       type: "list",
       name: "command",
-      message: "Please select a command",
+      message: "Please select a command:",
       choices: ["my-tweets", "spotify-this-song", "movie-this", "do-what-it-says"]
     }
   
   ]).then(function(choice) {
+
+    if (choice.command === "my-tweets") {
+        getTweets();
+    }
 
     if (choice.command === "spotify-this-song") {
         inquirer.prompt([
@@ -61,6 +66,11 @@ inquirer.prompt([
                 getMovie();
             })
     }
+
+    if (choice.command === "do-what-it-says") {
+        whatItSays();
+    }
+
    });
 
 
@@ -106,7 +116,7 @@ function getSong() {
     }
     else {
         songName = "the sign";
-        console.log(songName);
+        // console.log(songName);
         spotify.search({ type: 'track', query: songName}, function(err, data) {
             if (err) {
               return console.log('Error occurred: ' + err);
