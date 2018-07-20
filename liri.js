@@ -4,7 +4,6 @@ require("dotenv").config();
 
 var keys = require("./keys.js");
 var fs = require("fs");
-
 var inquirer = require('inquirer');
 var Twitter = require('twitter');
 var Spotify = require('node-spotify-api');
@@ -116,6 +115,7 @@ function getSong() {
     
         })
     }
+
     else {
         songName = "the sign";
 
